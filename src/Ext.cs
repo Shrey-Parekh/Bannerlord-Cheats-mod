@@ -13,7 +13,10 @@ namespace CustomCheats
         internal static CheatSettings S => CheatSettings.Instance;
 
         // ---------- campaign ----------
-        internal static bool IsPlayerHero(this Hero hero) => hero != null && hero == Hero.MainHero;
+        /// <summary>Hero.MainHero throws while a save is loading (Game.Current/PlayerTroop not set yet); this returns null instead.</summary>
+        internal static Hero MainHero => (Game.Current?.PlayerTroop as CharacterObject)?.HeroObject;
+
+        internal static bool IsPlayerHero(this Hero hero) => hero != null && hero == MainHero;
 
         internal static bool IsPlayerClan(this Hero hero) => hero != null && Clan.PlayerClan != null && hero.Clan == Clan.PlayerClan;
 

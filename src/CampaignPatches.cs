@@ -314,8 +314,8 @@ namespace CustomCheats
             try
             {
                 var prison = character?.PartyBelongedToAsPrisoner;
-                if (S?.NoPrisonerEscape == true && character.IsPrisoner && prison != null && Hero.MainHero != null &&
-                    prison.MapFaction == Hero.MainHero.MapFaction && !character.IsPlayerHero())
+                if (S?.NoPrisonerEscape == true && character.IsPrisoner && prison != null && MainHero != null &&
+                    prison.MapFaction == MainHero.MapFaction && !character.IsPlayerHero())
                     return false;
             }
             catch (Exception e)
@@ -329,7 +329,7 @@ namespace CustomCheats
         {
             try
             {
-                if (S?.InstantEscape == true && Hero.MainHero != null && Hero.MainHero.IsPrisoner)
+                if (S?.InstantEscape == true && MainHero != null && MainHero.IsPrisoner)
                     PlayerCaptivity.EndCaptivity();
             }
             catch (Exception e)
@@ -513,8 +513,8 @@ namespace CustomCheats
         {
             if (attributes == null || Clan.PlayerClan == null)
                 return null;
-            if (Hero.MainHero != null && ReferenceEquals(Hero.MainHero.CharacterAttributes, attributes))
-                return Hero.MainHero;
+            if (MainHero != null && ReferenceEquals(MainHero.CharacterAttributes, attributes))
+                return MainHero;
             return Clan.PlayerClan.Heroes.FirstOrDefault(h => ReferenceEquals(h.CharacterAttributes, attributes));
         }
 

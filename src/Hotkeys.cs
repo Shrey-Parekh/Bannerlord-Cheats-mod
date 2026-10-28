@@ -40,7 +40,7 @@ namespace CustomCheats
             try
             {
                 var s = S;
-                if (s == null || Campaign.Current == null || Hero.MainHero == null)
+                if (s == null || Campaign.Current == null || MainHero == null)
                     return;
                 var screen = ScreenManager.TopScreen;
 
@@ -145,7 +145,7 @@ namespace CustomCheats
 
         private static void Character(ScreenBase screen)
         {
-            var hero = ViewModel<CharacterDeveloperVM>(screen)?.CurrentCharacter?.Hero ?? Hero.MainHero;
+            var hero = ViewModel<CharacterDeveloperVM>(screen)?.CurrentCharacter?.Hero ?? MainHero;
             var dev = hero.HeroDeveloper;
             if (Input.IsKeyPressed(InputKey.A))
             {
@@ -185,7 +185,7 @@ namespace CustomCheats
         {
             try
             {
-                if (S?.EnableHotkeys != true || !Ctrl || Campaign.Current == null || Hero.MainHero == null)
+                if (S?.EnableHotkeys != true || !Ctrl || Campaign.Current == null || MainHero == null)
                     return;
                 bool h = Input.IsKeyPressed(InputKey.H), x = Input.IsKeyPressed(InputKey.X);
                 if (!h && !x)
@@ -193,17 +193,17 @@ namespace CustomCheats
 
                 switch (__instance?.Obj)
                 {
-                    case Hero hero when h && hero != Hero.MainHero && hero.IsAlive:
+                    case Hero hero when h && hero != MainHero && hero.IsAlive:
                         Confirm($"Play as {hero.Name}?", "You will take control of this hero. This can not be undone.",
                             () => ChangePlayerCharacterAction.Apply(hero));
                         break;
-                    case Hero hero when x && hero != Hero.MainHero && hero.IsAlive:
+                    case Hero hero when x && hero != MainHero && hero.IsAlive:
                         Confirm($"Kill {hero.Name}?", "This hero will die immediately. This can not be undone.",
                             () => KillCharacterAction.ApplyByMurder(hero, null, true));
                         break;
                     case Settlement settlement when h && (settlement.IsTown || settlement.IsCastle) && settlement.OwnerClan != Clan.PlayerClan:
                         Confirm($"Take {settlement.Name}?", "Ownership of this settlement will be transferred to you.",
-                            () => ChangeOwnerOfSettlementAction.ApplyByDefault(Hero.MainHero, settlement));
+                            () => ChangeOwnerOfSettlementAction.ApplyByDefault(MainHero, settlement));
                         break;
                     case CharacterObject troop when h && !troop.IsHero:
                         int count = Shift ? 10 : 1;

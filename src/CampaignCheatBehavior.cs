@@ -11,7 +11,7 @@ namespace CustomCheats
     {
         private static bool InCampaign()
         {
-            if (Campaign.Current != null && Hero.MainHero != null && Clan.PlayerClan != null)
+            if (Campaign.Current != null && Ext.MainHero != null && Clan.PlayerClan != null)
                 return true;
             Log.Message("Custom Cheats: load a campaign first.", Colors.Yellow);
             return false;
@@ -32,7 +32,7 @@ namespace CustomCheats
 
         internal static void AddGold(int amount) => Run("Add Gold", () =>
         {
-            Hero.MainHero.ChangeHeroGold(amount);
+            Ext.MainHero.ChangeHeroGold(amount);
             Log.Message($"Added {amount:N0} gold.");
         });
 
@@ -50,7 +50,7 @@ namespace CustomCheats
 
         internal static void AddPoints(int attributePoints, int focusPoints) => Run("Add Points", () =>
         {
-            var dev = Hero.MainHero.HeroDeveloper;
+            var dev = Ext.MainHero.HeroDeveloper;
             dev.UnspentAttributePoints += attributePoints;
             dev.UnspentFocusPoints += focusPoints;
             Log.Message($"Added {attributePoints} attribute and {focusPoints} focus points.");
@@ -60,17 +60,17 @@ namespace CustomCheats
         {
             foreach (var skill in Skills.All)
             {
-                if (Hero.MainHero.GetSkillValue(skill) < level)
-                    Hero.MainHero.HeroDeveloper.SetInitialSkillLevel(skill, level);
+                if (Ext.MainHero.GetSkillValue(skill) < level)
+                    Ext.MainHero.HeroDeveloper.SetInitialSkillLevel(skill, level);
             }
             Log.Message($"All skills set to {level}.");
         });
 
-        internal static void MaxAttributes() => MaxAttributes(Hero.MainHero);
+        internal static void MaxAttributes() => MaxAttributes(Ext.MainHero);
 
         internal static void MaxAttributes(Hero hero) => Run("Max Attributes", () =>
         {
-            hero ??= Hero.MainHero;
+            hero ??= Ext.MainHero;
             int max = Campaign.Current.Models.CharacterDevelopmentModel.MaxAttribute;
             foreach (var attribute in new[] { DefaultCharacterAttributes.Vigor, DefaultCharacterAttributes.Control, DefaultCharacterAttributes.Endurance,
                                               DefaultCharacterAttributes.Cunning, DefaultCharacterAttributes.Social, DefaultCharacterAttributes.Intelligence })
