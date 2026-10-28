@@ -1,0 +1,64 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <AssemblyName>CustomCheats</AssemblyName>
+    <RootNamespace>CustomCheats</RootNamespace>
+    <Version>1.0.0</Version>
+    <OutputPath>bin\Win64_Shipping_Client\</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <DebugType>portable</DebugType>
+  </PropertyGroup>
+
+  <!-- Override on the command line if the game lives elsewhere: dotnet build -p:GameFolder="X:\...\Mount & Blade II Bannerlord" -->
+  <PropertyGroup>
+    <GameFolder Condition="'$(GameFolder)' == ''">D:\SteamLibrary\steamapps\common\Mount &amp; Blade II Bannerlord</GameFolder>
+    <WorkshopFolder Condition="'$(WorkshopFolder)' == ''">D:\SteamLibrary\steamapps\workshop\content\261550</WorkshopFolder>
+    <GameBin>$(GameFolder)\bin\Win64_Shipping_Client</GameBin>
+    <HarmonyBin Condition="'$(HarmonyBin)' == ''">$(WorkshopFolder)\2859188632\bin\Win64_Shipping_Client</HarmonyBin>
+    <McmBin Condition="'$(McmBin)' == ''">$(WorkshopFolder)\2859238197\bin\Win64_Shipping_Client</McmBin>
+    <DeployFolder>$(GameFolder)\Modules\CustomCheats</DeployFolder>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="$(GameBin)\TaleWorlds.*.dll" Exclude="$(GameBin)\TaleWorlds.Native.dll;$(GameBin)\TaleWorlds.Starter.DotNetCore.dll">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="$(GameFolder)\Modules\SandBox\bin\Win64_Shipping_Client\SandBox*.dll">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="$(HarmonyBin)\0Harmony.dll">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="$(McmBin)\MCMv5.dll">
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="tests\**" />
+    <None Remove="tests\**" />
+  </ItemGroup>
+
+  <!-- Copy SubModule.xml + DLL into the game's Modules folder after every build (skipped if the game folder is absent). -->
+  <Target Name="DeployToGame" AfterTargets="Build" Condition="Exists('$(GameFolder)\Modules')">
+    <Copy SourceFiles="$(MSBuildProjectDirectory)\SubModule.xml" DestinationFolder="$(DeployFolder)" />
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll;$(OutputPath)$(AssemblyName).pdb" DestinationFolder="$(DeployFolder)\bin\Win64_Shipping_Client" />
+    <Message Importance="high" Text="CustomCheats deployed to $(DeployFolder)" />
+  </Target>
+
+  <!-- Release builds also refresh the ready-to-install module folder that is committed under release/. -->
+  <Target Name="PackageRelease" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
+    <Copy SourceFiles="$(MSBuildProjectDirectory)\SubModule.xml" DestinationFolder="$(MSBuildProjectDirectory)\release\CustomCheats" />
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(MSBuildProjectDirectory)\release\CustomCheats\bin\Win64_Shipping_Client" />
+  </Target>
+
+</Project>
